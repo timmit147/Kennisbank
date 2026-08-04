@@ -3,332 +3,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kennisbank & Chat</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <style>
-    :root {
-      --bg-app: #f8fafc;
-      --card-bg: #ffffff;
-      --primary: #2563eb;       /* Modern helder blauw */
-      --primary-light: #eff6ff;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --radius: 12px;
-      --shadow: 0 4px 20px -2px rgba(0,0,0,0.05);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-    body { background-color: var(--bg-app); color: var(--text-main); }
-
-    /* Mobiele Container */
-    .app-container {
-      max-width: 480px; /* Perfect voor mobiel & responsive op desktop */
-      margin: 0 auto;
-      min-height: 100vh;
-      background: var(--bg-app);
-      position: relative;
-      padding-bottom: 80px;
-    }
-
-    /* Header */
-    .header {
-      background: var(--card-bg);
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .header h1 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
-    .user-pill { font-size: 0.85rem; background: var(--primary-light); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 600; }
-
-    /* Zoek & Filters */
-    .search-section { padding: 16px 20px 8px 20px; }
-    
-    .search-bar {
-      position: relative;
-      margin-bottom: 12px;
-    }
-
-    .search-bar i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-    .search-bar input {
-      width: 100%;
-      padding: 12px 14px 12px 42px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--card-bg);
-      font-size: 0.95rem;
-      outline: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    }
-
-    /* Snelle filter-chips (Pills) */
-    .filter-chips {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      scrollbar-width: none; /* Verberg scrollbar op mobiel */
-    }
-
-    .chip {
-      white-space: nowrap;
-      padding: 6px 14px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-    /* Artikelen Lijst */
-    .list-section { padding: 8px 20px 20px 20px; }
-    .results-count { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    .article-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: var(--shadow);
-      display: flex;
-      gap: 12px;
-      text-decoration: none;
-      color: inherit;
-      transition: transform 0.1s ease;
-    }
-
-    .article-card:active { transform: scale(0.98); }
-
-    .article-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      background: var(--primary-light);
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-
-    .article-info { flex: 1; }
-    .article-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
-    .article-meta { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 10px; align-items: center; }
-
-    /* Visuele Tag/Badge */
-    .tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; background: #f1f5f9; color: var(--text-muted); }
-
-    /* FLOATING CHAT BUTTON (UX Beste Keuze) */
-    .chat-trigger {
-      position: fixed;
-      bottom: 20px;
-      right: calc(50% - 220px); /* Blijft gecentreerd binnen mobiel grid */
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 14px 20px;
-      border-radius: 30px;
-      font-weight: 600;
-      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      z-index: 99;
-    }
-
-    @media (max-width: 480px) {
-      .chat-trigger { right: 20px; }
-    }
-
-    /* SLIDE-UP CHAT OVERLAY */
-    .chat-modal {
-      position: fixed;
-      bottom: -100%; /* Verborgen onderaan scherm */
-      left: 0; right: 0;
-      height: 85vh;
-      background: var(--card-bg);
-      border-top-left-radius: 20px;
-      border-top-right-radius: 20px;
-      box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      transition: bottom 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
-    }
-
-    /* Maak chat zichtbaar */
-    .chat-modal.open { bottom: 0; }
-
-    .chat-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chat-header h3 { font-size: 1rem; font-weight: 600; }
-    .close-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; }
-
-    .chat-body { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #fafafa; }
-
-    .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
-    .msg.bot { background: white; border: 1px solid var(--border); align-self: flex-start; }
-    .msg.user { background: var(--primary); color: white; align-self: flex-end; }
-
-    .msg-img { width: 100%; max-width: 200px; border-radius: 8px; margin-top: 6px; }
-
-    .chat-footer {
-      padding: 12px 16px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: white;
-    }
-
-    .chat-footer input {
-      flex: 1;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      outline: none;
-      font-size: 0.9rem;
-    }
-
-    .icon-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); padding: 6px; cursor: pointer; }
-    .send-btn { background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
-
-  </style>
+  <title>Hosting & Kennisbank Dashboard</title>
+  <!-- Tailwind CSS via CDN voor snelle styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 font-sans text-gray-800 p-6">
 
-  <div class="app-container">
+  <div class="max-w-7xl mx-auto space-y-8">
 
-    <!-- Header -->
-    <header class="header">
-      <h1>Kennisbank</h1>
-      <span class="user-pill">Tim M.</span>
+    <!-- HEADER -->
+    <header class="flex justify-between items-center border-b pb-4 border-gray-300">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Beheerders Dashboard</h1>
+        <p class="text-sm text-gray-500">Kennisbank & Hosting Overzicht met ABCDE Segmentatie</p>
+      </div>
     </header>
 
-    <!-- Zoekbalk & Filter Pills (UX Verbetering) -->
-    <section class="search-section">
-      <div class="search-bar">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Zoek op titel, tags, inhoud...">
-      </div>
-
-      <!-- Vervangt lelijke dropdowns op mobiel door te scrollen -->
-      <div class="filter-chips">
-        <div class="chip active">Alles</div>
-        <div class="chip">Automatisering</div>
-        <div class="chip">Processen</div>
-        <div class="chip">Security</div>
-        <div class="chip">TeamworkPM</div>
+    <!-- SECTIE 1: CHAT PRIVACY DISCLAIMER DEMO -->
+    <section class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+      <h2 class="text-sm font-semibold text-gray-700 mb-2">AI Chat Component</h2>
+      <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+        <input type="text" placeholder="Stel een vraag aan de AI assistant..." class="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+        
+        <!-- PRIVACY DISCLAIMER -->
+        <div class="flex items-center gap-2 text-xs text-gray-500 mt-2 px-1">
+          <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0 0v2m0-2h2m-2 0H10m11 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span><strong>Privacy:</strong> Deel a.u.b. geen persoonlijke of privacygevoelige informatie in deze chat.</span>
+        </div>
       </div>
     </section>
 
-    <!-- Overzichtelijke Artikelen Lijst -->
-    <section class="list-section">
-      <div class="results-count">35 Artikelen</div>
-
-      <!-- Kaart 1 (Met visueel HTML icoon) -->
-      <a href="#" class="article-card">
-        <div class="article-icon">
-          <i class="fa-solid fa-code"></i>
-        </div>
-        <div class="article-info">
-          <div class="article-title">TeamworkPM SQL inzichtpagina</div>
-          <div class="article-meta">
-            <span><i class="fa-regular fa-calendar"></i> 04-08-2026</span>
-            <span class="tag">SQL / HTML</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Kaart 2 -->
-      <a href="#" class="article-card">
-        <div class="article-icon">
-          <i class="fa-solid fa-diagram-project"></i>
-        </div>
-        <div class="article-info">
-          <div class="article-title">Projecten uit TeamworkPM</div>
-          <div class="article-meta">
-            <span><i class="fa-regular fa-calendar"></i> 03-08-2026</span>
-            <span class="tag">Workflow</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Kaart 3 -->
-      <a href="#" class="article-card">
-        <div class="article-icon">
-          <i class="fa-solid fa-users"></i>
-        </div>
-        <div class="article-info">
-          <div class="article-title">Klanten uit TeamworkPM</div>
-          <div class="article-meta">
-            <span><i class="fa-regular fa-calendar"></i> 03-08-2026</span>
-            <span class="tag">Proces</span>
-          </div>
-        </div>
-      </a>
-
+    <!-- SECTIE 2: KENNISBANK CATEGORIEËN -->
+    <section>
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Kennisbank Categorieën</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="kennisbank-grid">
+        <!-- Dynamisch gevuld via JavaScript -->
+      </div>
     </section>
 
-    <!-- FLOATING CHAT BUTTON -->
-    <button class="chat-trigger" onclick="toggleChat()">
-      <i class="fa-solid fa-message"></i>
-      <span>Stel Vraag / Upload</span>
-    </button>
+    <hr class="border-gray-300">
 
-    <!-- CHAT SLIDE-UP OVERLAY -->
-    <div class="chat-modal" id="chatModal">
-      <div class="chat-header">
-        <h3>AI Assistent & Upload</h3>
-        <button class="close-btn" onclick="toggleChat()"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <div class="chat-body">
-        <div class="msg bot">
-          Waar kan ik je mee helpen? Upload een screenshot of vraag iets over de Kennisbank!
+    <!-- SECTIE 3: DASHBOARD STATS (KPI's) -->
+    <section>
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Hosting Overzicht</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+          <p class="text-xs text-gray-500 uppercase font-semibold">Totaal Sites</p>
+          <p class="text-2xl font-bold text-gray-900" id="stat-total">0</p>
         </div>
-
-        <div class="msg user">
-          Hier is een visueel voorbeeld dat ik wil toevoegen:
-          <img src="https://via.placeholder.com/250x120" class="msg-img" alt="Schermafbeelding">
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+          <p class="text-xs text-gray-500 uppercase font-semibold">Actief / Inactief</p>
+          <p class="text-2xl font-bold text-green-600"><span id="stat-active">0</span> <span class="text-xs font-normal text-gray-400">/ <span id="stat-inactive">0</span></span></p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+          <p class="text-xs text-gray-500 uppercase font-semibold">Totale Opslag</p>
+          <p class="text-2xl font-bold text-blue-600" id="stat-storage">0 GB</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+          <p class="text-xs text-gray-500 uppercase font-semibold">Totaal Dataverkeer</p>
+          <p class="text-2xl font-bold text-indigo-600" id="stat-bandwidth">0 GB/m</p>
         </div>
       </div>
 
-      <div class="chat-footer">
-        <button class="icon-btn" title="Afbeelding uploaden"><i class="fa-solid fa-image"></i></button>
-        <input type="text" placeholder="Typ een bericht...">
-        <button class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+      <!-- SECTIE 4: ABCDE KLANTEN TABEL -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h3 class="text-lg font-bold text-gray-800">Geautomatiseerde ABCDE Klanten Segmentatie</h3>
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Gesorteerd op Tier</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-gray-600">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-500 border-b border-gray-200">
+              <tr>
+                <th class="p-3">Domein</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Server</th>
+                <th class="p-3">Opslag (GB)</th>
+                <th class="p-3">Traffic (GB/m)</th>
+                <th class="p-3">ABCDE Tier</th>
+              </tr>
+            </thead>
+            <tbody id="client-table-body" class="divide-y divide-gray-100">
+              <!-- Dynamisch gevuld via JavaScript -->
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </section>
 
   </div>
 
+  <!-- JAVASCRIPT LOGICA -->
   <script>
-    function toggleChat() {
-      const modal = document.getElementById('chatModal');
-      modal.classList.toggle('open');
+    // 1. DATA: KENNISBANK CATEGORIEËN
+    const kbCategories = [
+      {
+        title: "Kennis & Richtlijnen",
+        icon: "📘",
+        subs: ["Kennis (Achtergrond)", "Richtlijn (Standaarden)", "Leermoment (Retrospectives)"]
+      },
+      {
+        title: "Processen & Operations",
+        icon: "⚙️",
+        subs: ["Proces (SOP's)", "Workflow (Werkstromen)", "Automatisering (AI & Scripts)"]
+      },
+      {
+        title: "Systeem & Data",
+        icon: "🗄️",
+        subs: ["Bron (Documentatie)", "Security (AVG & Audits)", "Webpagina (Sheets & Links)"]
+      },
+      {
+        title: "Organisatie",
+        icon: "👥",
+        subs: ["Denksessie (Brainstorms)", "Teamprofiel (Rollen)"]
+      }
+    ];
+
+    // 2. DATA: HOSTING SITES (Voorbeeld-dataset gebaseerd op je dashboard)
+    const rawSites = [
+      { domain: "jktranslate.com", status: "active", server: "Kinsta", storageGB: 84.7, bandwidthGB: 37.0, isWooCommerce: true },
+      { domain: "studioroof.com", status: "active", server: "Cloudways", storageGB: 64.0, bandwidthGB: 2.1, isWooCommerce: true },
+      { domain: "sdk-kinderopvang.nl", status: "active", server: "Rory", storageGB: 22.1, bandwidthGB: 15.4, isWooCommerce: false },
+      { domain: "goudabijkaarslicht.nl", status: "active", server: "Clara", storageGB: 12.4, bandwidthGB: 8.2, isWooCommerce: false },
+      { domain: "keencoffee.com", status: "active", server: "Ploi", storageGB: 8.5, bandwidthGB: 5.0, isWooCommerce: true },
+      { domain: "backtoblackcoffee.nl", status: "active", server: "Rory", storageGB: 3.2, bandwidthGB: 1.1, isWooCommerce: false },
+      { domain: "boevenkopje.nl", status: "active", server: "Clara", storageGB: 1.8, bandwidthGB: 0.5, isWooCommerce: false },
+      { domain: "old-project-test.dev", status: "inactive", server: "Rory", storageGB: 15.0, bandwidthGB: 0.0, isWooCommerce: false },
+      { domain: "problem-client-site.nl", status: "on_hold", server: "Cloudways", storageGB: 45.0, bandwidthGB: 50.0, isWooCommerce: true },
+      { domain: "unused-redirect.com", status: "inactive", server: "Clara", storageGB: 0.1, bandwidthGB: 0.0, isWooCommerce: false }
+    ];
+
+    // 3. LOGICA: ABCDE CATEGORISATIE ALGORITME
+    function categorizeClient(site) {
+      if (site.status === 'inactive') {
+        return { tier: 'E', name: 'Elimineren / Opruimen', color: 'bg-red-100 text-red-800' };
+      }
+      if (site.status === 'on_hold') {
+        return { tier: 'D', name: 'Low Margin / Twijfelgeval', color: 'bg-orange-100 text-orange-800' };
+      }
+      if (site.storageGB > 20 || site.bandwidthGB > 30 || site.isWooCommerce) {
+        return { tier: 'A', name: 'Enterprise / Top Prioriteit', color: 'bg-emerald-100 text-emerald-800' };
+      }
+      if (site.storageGB >= 5 && site.storageGB <= 20) {
+        return { tier: 'B', name: 'Groeier / Waardevol', color: 'bg-blue-100 text-blue-800' };
+      }
+      return { tier: 'C', name: 'Standaard / Low Maint.', color: 'bg-gray-100 text-gray-800' };
     }
+
+    // 4. RENDERING: KENNISBANK CATEGORIEËN
+    const kbContainer = document.getElementById('kennisbank-grid');
+    kbCategories.forEach(cat => {
+      const card = document.createElement('div');
+      card.className = "bg-white p-4 rounded-xl shadow-sm border border-gray-200";
+      card.innerHTML = `
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xl">${cat.icon}</span>
+          <h3 class="font-bold text-gray-800">${cat.title}</h3>
+        </div>
+        <ul class="space-y-1 text-sm text-gray-600">
+          ${cat.subs.map(sub => `<li class="flex items-center gap-1.5"><span class="text-gray-400">•</span> ${sub}</li>`).join('')}
+        </ul>
+      `;
+      kbContainer.appendChild(card);
+    });
+
+    // 5. RENDERING: HOSTING STATS & TABLE
+    let totalStorage = 0;
+    let totalBandwidth = 0;
+    let activeCount = 0;
+    let inactiveCount = 0;
+
+    const tableBody = document.getElementById('client-table-body');
+
+    // Sorteer sites op Tier (A -> E)
+    const processedSites = rawSites.map(site => {
+      const abcde = categorizeClient(site);
+      return { ...site, abcde };
+    }).sort((a, b) => a.abcde.tier.localeCompare(b.abcde.tier));
+
+    processedSites.forEach(site => {
+      // Stats optellen
+      totalStorage += site.storageGB;
+      totalBandwidth += site.bandwidthGB;
+      if (site.status === 'active') activeCount++; else inactiveCount++;
+
+      // Rij toevoegen aan tabel
+      const row = document.createElement('tr');
+      row.className = "hover:bg-gray-50 transition";
+      row.innerHTML = `
+        <td class="p-3 font-medium text-gray-900">${site.domain}</td>
+        <td class="p-3">
+          <span class="px-2 py-0.5 text-xs rounded-full ${site.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}">
+            ${site.status}
+          </span>
+        </td>
+        <td class="p-3">${site.server}</td>
+        <td class="p-3">${site.storageGB} GB</td>
+        <td class="p-3">${site.bandwidthGB} GB/m</td>
+        <td class="p-3">
+          <span class="px-2.5 py-1 text-xs font-bold rounded-md ${site.abcde.color}">
+            Tier ${site.abcde.tier} - ${site.abcde.name}
+          </span>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+
+    // KPI waarden invullen
+    document.getElementById('stat-total').innerText = rawSites.length;
+    document.getElementById('stat-active').innerText = activeCount;
+    document.getElementById('stat-inactive').innerText = inactiveCount;
+    document.getElementById('stat-storage').innerText = totalStorage.toFixed(1) + " GB";
+    document.getElementById('stat-bandwidth').innerText = totalBandwidth.toFixed(1) + " GB/m";
+
   </script>
 </body>
 </html>
