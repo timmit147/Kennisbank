@@ -3,39 +3,506 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Chat</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 font-sans text-gray-800 p-6">
-  <div class="max-w-3xl mx-auto space-y-6">
+  <title>Kennisbank & Operations Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-app: #f8fafc;
+      --card-bg: #ffffff;
+      --primary: #2563eb;       /* Modern helder blauw */
+      --primary-light: #eff6ff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 4px 20px -2px rgba(0,0,0,0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg-app); color: var(--text-main); }
+
+    /* Container */
+    .app-container {
+      max-width: 480px; /* Perfect voor mobiel & responsive op desktop */
+      margin: 0 auto;
+      min-height: 100vh;
+      background: var(--bg-app);
+      position: relative;
+      padding-bottom: 80px;
+    }
+
+    /* Header */
+    .header {
+      background: var(--card-bg);
+      padding: 16px 20px 8px 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .header h1 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
+    .user-pill { font-size: 0.85rem; background: var(--primary-light); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 600; }
+
+    /* Tab Navigatie */
+    .nav-tabs {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 8px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding-bottom: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Zoekbalk & Filters */
+    .search-section { padding: 16px 20px 8px 20px; }
     
-    <!-- Navigatie -->
-    <nav class="flex gap-4 border-b pb-4 text-sm font-medium">
-      <a href="index.html" class="text-blue-600 border-b-2 border-blue-600 pb-1">AI Chat</a>
-      <a href="kennisbank.html" class="text-gray-500 hover:text-gray-800">Kennisbank Structuur</a>
-      <a href="dashboard.html" class="text-gray-500 hover:text-gray-800">Hosting Dashboard</a>
-      <a href="klanten.html" class="text-gray-500 hover:text-gray-800">ABCDE Klanten</a>
-    </nav>
+    .search-bar {
+      position: relative;
+      margin-bottom: 12px;
+    }
 
-    <!-- Chat Card -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-      <h1 class="text-xl font-bold text-gray-900 mb-4">AI Assistant</h1>
-      
-      <div class="space-y-4">
-        <textarea rows="3" placeholder="Stel een vraag aan de AI assistant..." class="w-full p-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"></textarea>
-        
-        <button class="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700">Verstuur</button>
+    .search-bar i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-bar input {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      font-size: 0.95rem;
+      outline: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
 
-        <!-- Privacy Disclaimer -->
-        <div class="flex items-center gap-2 text-xs text-gray-500 pt-2 border-t border-gray-100">
-          <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0 0v2m0-2h2m-2 0H10m11 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>🔒 <strong>Privacy:</strong> Deel a.u.b. geen persoonlijke of privacygevoelige informatie in deze chat.</span>
+    /* Filter-chips */
+    .filter-chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+
+    .chip {
+      white-space: nowrap;
+      padding: 6px 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* Content Secties */
+    .content-section { padding: 8px 20px 20px 20px; display: none; }
+    .content-section.active { display: block; }
+
+    .results-count { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .article-card {
+      display: flex;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .article-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .article-info { flex: 1; }
+    .article-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
+    .article-meta { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 10px; align-items: center; }
+
+    .tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; background: #f1f5f9; color: var(--text-muted); }
+
+    /* Dashboard Grid Componenten */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .stat-card { background: var(--card-bg); padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+    .stat-value { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-top: 4px; }
+
+    /* ABCDE Badges */
+    .tier-badge { font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px; }
+    .tier-A { background: #d1fae5; color: #065f46; }
+    .tier-B { background: #dbeafe; color: #1e40af; }
+    .tier-C { background: #f1f5f9; color: #475569; }
+    .tier-D { background: #ffedd5; color: #9a3412; }
+    .tier-E { background: #fee2e2; color: #991b1b; }
+
+    /* FLOATING CHAT BUTTON */
+    .chat-trigger {
+      position: fixed;
+      bottom: 20px;
+      right: calc(50% - 220px);
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      z-index: 99;
+    }
+
+    @media (max-width: 480px) {
+      .chat-trigger { right: 20px; }
+    }
+
+    /* SLIDE-UP CHAT OVERLAY */
+    .chat-modal {
+      position: fixed;
+      bottom: -100%;
+      left: 0; right: 0;
+      height: 85vh;
+      background: var(--card-bg);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transition: bottom 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    .chat-modal.open { bottom: 0; }
+
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header h3 { font-size: 1rem; font-weight: 600; }
+    .close-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; }
+
+    .chat-body { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #fafafa; }
+
+    .msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
+    .msg.bot { background: white; border: 1px solid var(--border); align-self: flex-start; }
+    .msg.user { background: var(--primary); color: white; align-self: flex-end; }
+
+    .chat-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: white;
+    }
+
+    .chat-input-row { display: flex; align-items: center; gap: 8px; }
+    .chat-input-row input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    .icon-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); padding: 6px; cursor: pointer; }
+    .send-btn { background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+    /* Disclaimer in Chat */
+    .privacy-notice {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-top">
+        <h1 id="page-title">Kennisbank</h1>
+        <span class="user-pill">Tim M.</span>
+      </div>
+
+      <!-- Navigatie Tabs (JS Powered) -->
+      <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="switchPage('kennisbank', this)">Kennisbank</button>
+        <button class="tab-btn" onclick="switchPage('dashboard', this)">Hosting Dashboard</button>
+        <button class="tab-btn" onclick="switchPage('klanten', this)">ABCDE Klanten</button>
+      </nav>
+    </header>
+
+    <!-- ZOEK & FILTERS (Zichtbaar op Kennisbank) -->
+    <section class="search-section" id="search-section">
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Zoek op artikel, proces, status...">
+      </div>
+
+      <div class="filter-chips">
+        <div class="chip active" onclick="filterCategory('alles', this)">Alles</div>
+        <div class="chip" onclick="filterCategory('kennis', this)">Kennis & Richtlijnen</div>
+        <div class="chip" onclick="filterCategory('processen', this)">Processen</div>
+        <div class="chip" onclick="filterCategory('systeem', this)">Systeem & Data</div>
+        <div class="chip" onclick="filterCategory('organisatie', this)">Organisatie</div>
+      </div>
+    </section>
+
+    <!-- PAGINA 1: KENNISBANK -->
+    <section class="content-section active" id="page-kennisbank">
+      <div class="results-count">Gecategoriseerde Artikelen</div>
+
+      <a href="#" class="card article-card" data-cat="systeem">
+        <div class="article-icon"><i class="fa-solid fa-code"></i></div>
+        <div class="article-info">
+          <div class="article-title">TeamworkPM SQL inzichtpagina</div>
+          <div class="article-meta">
+            <span><i class="fa-regular fa-calendar"></i> 04-08-2026</span>
+            <span class="tag">Systeem & Data</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="card article-card" data-cat="processen">
+        <div class="article-icon"><i class="fa-solid fa-diagram-project"></i></div>
+        <div class="article-info">
+          <div class="article-title">Projecten Workflow SOP</div>
+          <div class="article-meta">
+            <span><i class="fa-regular fa-calendar"></i> 03-08-2026</span>
+            <span class="tag">Processen</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="card article-card" data-cat="kennis">
+        <div class="article-icon"><i class="fa-solid fa-book"></i></div>
+        <div class="article-info">
+          <div class="article-title">Beveiliging & AVG Richtlijnen</div>
+          <div class="article-meta">
+            <span><i class="fa-regular fa-calendar"></i> 01-08-2026</span>
+            <span class="tag">Kennis & Richtlijnen</span>
+          </div>
+        </div>
+      </a>
+    </section>
+
+    <!-- PAGINA 2: HOSTING DASHBOARD -->
+    <section class="content-section" id="page-dashboard">
+      <div class="results-count">Performance & Capaciteit</div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Totaal Sites</div>
+          <div class="stat-value">542</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Actief / Inactief</div>
+          <div class="stat-value" style="color: #16a34a;">501 <span style="font-size:0.8rem; color:#64748b;">/ 41</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Totale Opslag</div>
+          <div class="stat-value" style="color: #2563eb;">1.5 TB</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Dataverkeer</div>
+          <div class="stat-value" style="color: #4f46e5;">2.8 TB/m</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="article-title" style="margin-bottom:10px;">Server Verdeling</div>
+        <div style="font-size:0.85rem; color:var(--text-muted); display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-between;"><span>Rory Server</span><strong>189 sites</strong></div>
+          <div style="display:flex; justify-between;"><span>Cloudways</span><strong>151 sites</strong></div>
+          <div style="display:flex; justify-between;"><span>Clara Server</span><strong>133 sites</strong></div>
+          <div style="display:flex; justify-between;"><span>Kinsta</span><strong>43 sites</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGINA 3: ABCDE KLANTEN -->
+    <section class="content-section" id="page-klanten">
+      <div class="results-count">Geautomatiseerde Segmentatie</div>
+
+      <div class="card">
+        <span class="tier-badge tier-A">Tier A — Enterprise</span>
+        <div class="article-title">jktranslate.com</div>
+        <div class="article-meta"><span>Opslag: 84.7 GB</span> • <span>Traffic: 37 GB/m</span></div>
+      </div>
+
+      <div class="card">
+        <span class="tier-badge tier-B">Tier B — Groeier</span>
+        <div class="article-title">keencoffee.com</div>
+        <div class="article-meta"><span>Opslag: 8.5 GB</span> • <span>Traffic: 5 GB/m</span></div>
+      </div>
+
+      <div class="card">
+        <span class="tier-badge tier-C">Tier C — Standaard</span>
+        <div class="article-title">backtoblackcoffee.nl</div>
+        <div class="article-meta"><span>Opslag: 3.2 GB</span> • <span>Traffic: 1.1 GB/m</span></div>
+      </div>
+
+      <div class="card">
+        <span class="tier-badge tier-E">Tier E — Opruimen</span>
+        <div class="article-title">old-project-test.dev</div>
+        <div class="article-meta"><span>Status: Inactief</span> • <span>Opslag: 15 GB</span></div>
+      </div>
+    </section>
+
+    <!-- FLOATING CHAT BUTTON -->
+    <button class="chat-trigger" onclick="toggleChat()">
+      <i class="fa-solid fa-message"></i>
+      <span>Stel Vraag / AI</span>
+    </button>
+
+    <!-- CHAT SLIDE-UP OVERLAY -->
+    <div class="chat-modal" id="chatModal">
+      <div class="chat-header">
+        <h3>AI Assistent</h3>
+        <button class="close-btn" onclick="toggleChat()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="chat-body" id="chatBody">
+        <div class="msg bot">
+          Waar kan ik je mee helpen? Stel een vraag over de Kennisbank of je Hosting accounts.
+        </div>
+      </div>
+
+      <div class="chat-footer">
+        <div class="chat-input-row">
+          <button class="icon-btn" title="Afbeelding uploaden"><i class="fa-solid fa-image"></i></button>
+          <input type="text" id="chatInput" placeholder="Typ een bericht...">
+          <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+        <!-- PRIVACY DISCLAIMER -->
+        <div class="privacy-notice">
+          🔒 <strong>Privacy:</strong> Deel a.u.b. geen persoonlijke of privacygevoelige informatie.
         </div>
       </div>
     </div>
 
   </div>
+
+  <script>
+    // PAGE SWITCHER
+    function switchPage(pageId, btn) {
+      // Update Tab Styling
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Update Page Title
+      const titles = {
+        'kennisbank': 'Kennisbank',
+        'dashboard': 'Hosting Dashboard',
+        'klanten': 'ABCDE Klanten'
+      };
+      document.getElementById('page-title').innerText = titles[pageId];
+
+      // Hide Search Bar if not on Kennisbank
+      document.getElementById('search-section').style.display = (pageId === 'kennisbank') ? 'block' : 'none';
+
+      // Switch Visible Section
+      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('page-' + pageId).classList.add('active');
+    }
+
+    // FILTER CHIPS (Kennisbank)
+    function filterCategory(cat, chipBtn) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chipBtn.classList.add('active');
+
+      const cards = document.querySelectorAll('#page-kennisbank .article-card');
+      cards.forEach(card => {
+        if (cat === 'alles' || card.dataset.cat === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // CHAT TOGGLE
+    function toggleChat() {
+      document.getElementById('chatModal').classList.toggle('open');
+    }
+
+    // DUMMY CHAT SEND
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const body = document.getElementById('chatBody');
+      
+      // Add User Message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'msg user';
+      userMsg.innerText = text;
+      body.appendChild(userMsg);
+
+      input.value = '';
+      body.scrollTop = body.scrollHeight;
+
+      // Dummy AI Reply
+      setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'msg bot';
+        botMsg.innerText = "Ik heb je vraag ontvangen! Ik zoek nu in de documentatie naar antwoorden over: " + text;
+        body.appendChild(botMsg);
+        body.scrollTop = body.scrollHeight;
+      }, 600);
+    }
+  </script>
 </body>
 </html>
