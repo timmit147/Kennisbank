@@ -3,269 +3,332 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kennisbank & Chat Assistant</title>
+  <title>Kennisbank & Chat</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --primary-color: #0f766e;
-      --primary-hover: #0d9488;
-      --bg-color: #f8fafc;
+      --bg-app: #f8fafc;
       --card-bg: #ffffff;
-      --text-main: #1e293b;
+      --primary: #2563eb;       /* Modern helder blauw */
+      --primary-light: #eff6ff;
+      --text-main: #0f172a;
       --text-muted: #64748b;
-      --border-color: #e2e8f0;
+      --border: #e2e8f0;
       --radius: 12px;
+      --shadow: 0 4px 20px -2px rgba(0,0,0,0.05);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); padding: 20px 15px; }
-    .container { max-width: 800px; margin: 0 auto; }
+    body { background-color: var(--bg-app); color: var(--text-main); }
 
-    /* Top Navigation Tabs */
-    .view-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid var(--border-color);
-      padding-bottom: 10px;
+    /* Mobiele Container */
+    .app-container {
+      max-width: 480px; /* Perfect voor mobiel & responsive op desktop */
+      margin: 0 auto;
+      min-height: 100vh;
+      background: var(--bg-app);
+      position: relative;
+      padding-bottom: 80px;
     }
 
-    .tab-btn {
-      background: none;
-      border: none;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
+    /* Header */
+    .header {
+      background: var(--card-bg);
+      padding: 16px 20px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header h1 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
+    .user-pill { font-size: 0.85rem; background: var(--primary-light); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 600; }
+
+    /* Zoek & Filters */
+    .search-section { padding: 16px 20px 8px 20px; }
+    
+    .search-bar {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .search-bar i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-bar input {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      font-size: 0.95rem;
+      outline: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    /* Snelle filter-chips (Pills) */
+    .filter-chips {
+      display: flex;
       gap: 8px;
-      transition: all 0.2s;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: none; /* Verberg scrollbar op mobiel */
     }
 
-    .tab-btn.active {
-      background-color: var(--primary-color);
-      color: white;
+    .chip {
+      white-space: nowrap;
+      padding: 6px 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 500;
     }
 
-    /* Chat Section Container */
-    .chat-container {
+    .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* Artikelen Lijst */
+    .list-section { padding: 8px 20px 20px 20px; }
+    .results-count { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .article-card {
       background: var(--card-bg);
       border-radius: var(--radius);
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
       display: flex;
-      flex-direction: column;
-      height: 550px;
-      overflow: hidden;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.1s ease;
     }
 
-    /* Chat Messages Window */
-    .chat-messages {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      background: #fafafa;
-    }
+    .article-card:active { transform: scale(0.98); }
 
-    .message {
-      max-width: 80%;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      line-height: 1.4;
-    }
-
-    .message.user {
-      align-self: flex-end;
-      background-color: var(--primary-color);
-      color: white;
-      border-bottom-right-radius: 2px;
-    }
-
-    .message.bot {
-      align-self: flex-start;
-      background-color: #e2e8f0;
-      color: var(--text-main);
-      border-bottom-left-radius: 2px;
-    }
-
-    /* Afbeeldingen in chatbericht */
-    .message-image {
-      width: 100%;
-      max-width: 250px;
-      border-radius: 8px;
-      margin-top: 8px;
-      display: block;
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    /* Upload Preview Area */
-    .upload-preview {
-      display: flex;
-      gap: 10px;
-      padding: 8px 15px;
-      background: #f1f5f9;
-      border-top: 1px solid var(--border-color);
-    }
-
-    .preview-thumb {
-      position: relative;
-      width: 50px;
-      height: 50px;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .preview-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .preview-thumb .remove-btn {
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      background: rgba(0,0,0,0.6);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 16px;
-      height: 16px;
-      font-size: 10px;
-      cursor: pointer;
+    .article-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
     }
 
-    /* Chat Input Form */
-    .chat-input-area {
-      padding: 12px 15px;
-      background: white;
-      border-top: 1px solid var(--border-color);
+    .article-info { flex: 1; }
+    .article-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
+    .article-meta { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 10px; align-items: center; }
+
+    /* Visuele Tag/Badge */
+    .tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; background: #f1f5f9; color: var(--text-muted); }
+
+    /* FLOATING CHAT BUTTON (UX Beste Keuze) */
+    .chat-trigger {
+      position: fixed;
+      bottom: 20px;
+      right: calc(50% - 220px); /* Blijft gecentreerd binnen mobiel grid */
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    .chat-input-area input[type="text"] {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      outline: none;
-      font-size: 0.95rem;
-    }
-
-    .chat-input-area input[type="text"]:focus {
-      border-color: var(--primary-color);
-    }
-
-    .btn-icon {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.2rem;
       cursor: pointer;
-      padding: 8px;
-      border-radius: 6px;
-      transition: background 0.2s;
+      z-index: 99;
     }
 
-    .btn-icon:hover {
-      background: #f1f5f9;
-      color: var(--primary-color);
+    @media (max-width: 480px) {
+      .chat-trigger { right: 20px; }
     }
 
-    .btn-send {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
+    /* SLIDE-UP CHAT OVERLAY */
+    .chat-modal {
+      position: fixed;
+      bottom: -100%; /* Verborgen onderaan scherm */
+      left: 0; right: 0;
+      height: 85vh;
+      background: var(--card-bg);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transition: bottom 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    /* Maak chat zichtbaar */
+    .chat-modal.open { bottom: 0; }
+
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header h3 { font-size: 1rem; font-weight: 600; }
+    .close-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; }
+
+    .chat-body { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #fafafa; }
+
+    .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
+    .msg.bot { background: white; border: 1px solid var(--border); align-self: flex-start; }
+    .msg.user { background: var(--primary); color: white; align-self: flex-end; }
+
+    .msg-img { width: 100%; max-width: 200px; border-radius: 8px; margin-top: 6px; }
+
+    .chat-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      background: white;
     }
 
-    .btn-send:hover {
-      background-color: var(--primary-hover);
+    .chat-footer input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      outline: none;
+      font-size: 0.9rem;
     }
 
-    /* Verberg het standaard HTML-bestandsupload element */
-    #file-input { display: none; }
+    .icon-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); padding: 6px; cursor: pointer; }
+    .send-btn { background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
+
   </style>
 </head>
 <body>
 
-  <div class="container">
-    
-    <!-- Tab Bladen -->
-    <div class="view-tabs">
-      <button class="tab-btn"><i class="fa-solid fa-book"></i> Kennisbank</button>
-      <button class="tab-btn active"><i class="fa-solid fa-comments"></i> Chat & Invoer</button>
-    </div>
+  <div class="app-container">
 
-    <!-- Chat Interface -->
-    <div class="chat-container">
-      
-      <!-- Berichtenvenster -->
-      <div class="chat-messages">
-        <div class="message bot">
-          Hallo Tim! Stel hier een vraag of upload een afbeelding/document om direct aan de kennisbank toe te voegen.
+    <!-- Header -->
+    <header class="header">
+      <h1>Kennisbank</h1>
+      <span class="user-pill">Tim M.</span>
+    </header>
+
+    <!-- Zoekbalk & Filter Pills (UX Verbetering) -->
+    <section class="search-section">
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Zoek op titel, tags, inhoud...">
+      </div>
+
+      <!-- Vervangt lelijke dropdowns op mobiel door te scrollen -->
+      <div class="filter-chips">
+        <div class="chip active">Alles</div>
+        <div class="chip">Automatisering</div>
+        <div class="chip">Processen</div>
+        <div class="chip">Security</div>
+        <div class="chip">TeamworkPM</div>
+      </div>
+    </section>
+
+    <!-- Overzichtelijke Artikelen Lijst -->
+    <section class="list-section">
+      <div class="results-count">35 Artikelen</div>
+
+      <!-- Kaart 1 (Met visueel HTML icoon) -->
+      <a href="#" class="article-card">
+        <div class="article-icon">
+          <i class="fa-solid fa-code"></i>
+        </div>
+        <div class="article-info">
+          <div class="article-title">TeamworkPM SQL inzichtpagina</div>
+          <div class="article-meta">
+            <span><i class="fa-regular fa-calendar"></i> 04-08-2026</span>
+            <span class="tag">SQL / HTML</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Kaart 2 -->
+      <a href="#" class="article-card">
+        <div class="article-icon">
+          <i class="fa-solid fa-diagram-project"></i>
+        </div>
+        <div class="article-info">
+          <div class="article-title">Projecten uit TeamworkPM</div>
+          <div class="article-meta">
+            <span><i class="fa-regular fa-calendar"></i> 03-08-2026</span>
+            <span class="tag">Workflow</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Kaart 3 -->
+      <a href="#" class="article-card">
+        <div class="article-icon">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="article-info">
+          <div class="article-title">Klanten uit TeamworkPM</div>
+          <div class="article-meta">
+            <span><i class="fa-regular fa-calendar"></i> 03-08-2026</span>
+            <span class="tag">Proces</span>
+          </div>
+        </div>
+      </a>
+
+    </section>
+
+    <!-- FLOATING CHAT BUTTON -->
+    <button class="chat-trigger" onclick="toggleChat()">
+      <i class="fa-solid fa-message"></i>
+      <span>Stel Vraag / Upload</span>
+    </button>
+
+    <!-- CHAT SLIDE-UP OVERLAY -->
+    <div class="chat-modal" id="chatModal">
+      <div class="chat-header">
+        <h3>AI Assistent & Upload</h3>
+        <button class="close-btn" onclick="toggleChat()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="chat-body">
+        <div class="msg bot">
+          Waar kan ik je mee helpen? Upload een screenshot of vraag iets over de Kennisbank!
         </div>
 
-        <div class="message user">
-          Hier is een schermafbeelding van de foutmelding bij TeamworkPM:
-          <!-- Voorbeeld van een meegestuurde afbeelding -->
-          <img src="https://via.placeholder.com/300x180?text=Foutmelding+Screenshot" alt="Uploaded Image" class="message-image">
-        </div>
-
-        <div class="message bot">
-          Bedankt! Ik heb de afbeelding geanalyseerd en opgeslagen onder de categorie **Software / TeamworkPM**. Wil je een korte omschrijving toevoegen?
+        <div class="msg user">
+          Hier is een visueel voorbeeld dat ik wil toevoegen:
+          <img src="https://via.placeholder.com/250x120" class="msg-img" alt="Schermafbeelding">
         </div>
       </div>
 
-      <!-- Preview van de geselecteerde afbeelding (optioneel via JS aan te sturen) -->
-      <div class="upload-preview">
-        <div class="preview-thumb">
-          <img src="https://via.placeholder.com/100" alt="Preview">
-          <button class="remove-btn"><i class="fa-solid fa-xmark"></i></button>
-        </div>
+      <div class="chat-footer">
+        <button class="icon-btn" title="Afbeelding uploaden"><i class="fa-solid fa-image"></i></button>
+        <input type="text" placeholder="Typ een bericht...">
+        <button class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
       </div>
-
-      <!-- Invoer Balk -->
-      <form class="chat-input-area" onsubmit="event.preventDefault();">
-        <!-- Verborgen File Input -->
-        <input type="file" id="file-input" accept="image/*">
-        
-        <!-- Bijlage / Afbeelding Knop -->
-        <button type="button" class="btn-icon" onclick="document.getElementById('file-input').click();" title="Afbeelding toevoegen">
-          <i class="fa-solid fa-paperclip"></i>
-        </button>
-
-        <input type="text" placeholder="Typ een bericht of stel een vraag...">
-        
-        <button type="submit" class="btn-send">
-          <span>Verstuur</span>
-          <i class="fa-solid fa-paper-plane"></i>
-        </button>
-      </form>
-
     </div>
 
   </div>
 
+  <script>
+    function toggleChat() {
+      const modal = document.getElementById('chatModal');
+      modal.classList.toggle('open');
+    }
+  </script>
 </body>
 </html>
