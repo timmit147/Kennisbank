@@ -33,7 +33,7 @@
       padding-bottom: 80px;
     }
 
-    /* Strakke Header zonder extra tab-links */
+    /* Strakke Header */
     .header {
       background: var(--card-bg);
       padding: 16px 20px;
@@ -165,13 +165,8 @@
       gap: 6px;
     }
 
-    .detail-content {
-      padding: 20px;
-      flex: 1;
-    }
-
+    .detail-content { padding: 20px; flex: 1; }
     .detail-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
-    .detail-tag { margin-bottom: 16px; display: inline-block; }
 
     .example-box {
       background: #f1f5f9;
@@ -185,19 +180,24 @@
       overflow-x: auto;
     }
 
-    /* Dashboard & Klanten Grid Styling voor in de detail-view */
+    /* Dashboard & Klanten Grid Styling */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
     .stat-card { background: var(--bg-app); padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); }
     .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
     .stat-value { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-top: 4px; }
 
-    .tier-card { background: var(--bg-app); border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 10px; }
-    .tier-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 4px; text-transform: uppercase; }
+    /* ABCDE Ranking Card Design */
+    .tier-card { background: var(--bg-app); border: 1px solid var(--border); padding: 14px; border-radius: 10px; margin-bottom: 12px; }
+    .tier-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .tier-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; }
     .tier-A { background: #d1fae5; color: #065f46; }
     .tier-B { background: #dbeafe; color: #1e40af; }
     .tier-C { background: #f1f5f9; color: #475569; }
     .tier-D { background: #ffedd5; color: #9a3412; }
     .tier-E { background: #fee2e2; color: #991b1b; }
+
+    .reason-box { background: white; border-radius: 6px; padding: 8px 10px; font-size: 0.8rem; margin-top: 8px; border: 1px dashed var(--border); }
+    .opinion-box { background: #fffbe3; border-left: 3px solid #f59e0b; padding: 8px 10px; font-size: 0.8rem; margin-top: 6px; border-radius: 4px; }
 
     /* FLOATING CHAT BUTTON */
     .chat-trigger {
@@ -264,65 +264,102 @@
     <section class="search-section">
       <div class="search-bar">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" onkeyup="searchCards()" placeholder="Zoek in de kennisbank...">
+        <input type="text" id="searchInput" onkeyup="searchCards()" placeholder="Zoek op titel, code of inhoud...">
       </div>
 
       <div class="filter-chips">
         <div class="chip active" onclick="filterCategory('alles', this)">Alles</div>
-        <div class="chip" onclick="filterCategory('dashboard', this)">Hosting Dashboard</div>
-        <div class="chip" onclick="filterCategory('klanten', this)">ABCDE Klanten</div>
+        <div class="chip" onclick="filterCategory('dashboard', this)">Dashboard</div>
+        <div class="chip" onclick="filterCategory('klanten', this)">Klanten</div>
         <div class="chip" onclick="filterCategory('systeem', this)">Systeem & Data</div>
         <div class="chip" onclick="filterCategory('processen', this)">Processen</div>
+        <div class="chip" onclick="filterCategory('beveiliging', this)">Beveiliging</div>
       </div>
     </section>
 
-    <!-- LISJT MET ARTIKELEN (Inclusief Dashboard & Klanten) -->
+    <!-- LIJST MET ARTIKELEN -->
     <section class="list-section">
-      <div class="results-count">Alle Artikelen & Dashboards</div>
+      <div class="results-count" id="results-count">Alle Artikelen & Dashboards</div>
 
-      <!-- Artikel: Hosting Dashboard -->
+      <!-- Artikel 1: Hosting Dashboard -->
       <div class="article-card" data-cat="dashboard" onclick="openDetail('detail-dashboard')">
         <div class="article-icon"><i class="fa-solid fa-chart-line"></i></div>
         <div class="article-info">
           <div class="article-title">Hosting Performance Dashboard</div>
           <div class="article-meta">
             <span><i class="fa-regular fa-calendar"></i> Live Data</span>
-            <span class="tag">Hosting Dashboard</span>
+            <span class="tag">Dashboard</span>
           </div>
         </div>
       </div>
 
-      <!-- Artikel: ABCDE Klanten -->
+      <!-- Artikel 2: ABCDE Klanten -->
       <div class="article-card" data-cat="klanten" onclick="openDetail('detail-klanten')">
         <div class="article-icon"><i class="fa-solid fa-users-rectangle"></i></div>
         <div class="article-info">
-          <div class="article-title">ABCDE Klanten Segmentatie</div>
+          <div class="article-title">ABCDE Klanten Ranking & Redenen</div>
           <div class="article-meta">
             <span><i class="fa-regular fa-calendar"></i> Update 2026</span>
-            <span class="tag">ABCDE Klanten</span>
+            <span class="tag">Klanten</span>
           </div>
         </div>
       </div>
 
-      <!-- Artikel: Teamwork SQL -->
+      <!-- Artikel 3: SSL Certificaten -->
+      <div class="article-card" data-cat="beveiliging" onclick="openDetail('detail-ssl')">
+        <div class="article-icon"><i class="fa-solid fa-lock"></i></div>
+        <div class="article-info">
+          <div class="article-title">SSL Certificaten Handmatig Vernieuwen</div>
+          <div class="article-meta">
+            <span><i class="fa-regular fa-calendar"></i> 04-08-2026</span>
+            <span class="tag">Beveiliging</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artikel 4: Malware Opschonen -->
+      <div class="article-card" data-cat="beveiliging" onclick="openDetail('detail-malware')">
+        <div class="article-icon"><i class="fa-solid fa-bug"></i></div>
+        <div class="article-info">
+          <div class="article-title">WP Malware Opschonen via WP-CLI</div>
+          <div class="article-meta">
+            <span><i class="fa-regular fa-calendar"></i> 02-08-2026</span>
+            <span class="tag">Beveiliging</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artikel 5: Teamwork SQL -->
       <div class="article-card" data-cat="systeem" onclick="openDetail('detail-sql')">
         <div class="article-icon"><i class="fa-solid fa-database"></i></div>
         <div class="article-info">
           <div class="article-title">TeamworkPM SQL Inzichtpagina Query</div>
           <div class="article-meta">
-            <span><i class="fa-regular fa-calendar"></i> 04-08-2026</span>
+            <span><i class="fa-regular fa-calendar"></i> 01-08-2026</span>
             <span class="tag">Systeem & Data</span>
           </div>
         </div>
       </div>
 
-      <!-- Artikel: Onboarding SOP -->
+      <!-- Artikel 6: Server Resource Limieten -->
+      <div class="article-card" data-cat="systeem" onclick="openDetail('detail-php')">
+        <div class="article-icon"><i class="fa-solid fa-sliders"></i></div>
+        <div class="article-info">
+          <div class="article-title">PHP Memory Limit & Max Execution Config</div>
+          <div class="article-meta">
+            <span><i class="fa-regular fa-calendar"></i> 29-07-2026</span>
+            <span class="tag">Systeem & Data</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artikel 7: Onboarding SOP -->
       <div class="article-card" data-cat="processen" onclick="openDetail('detail-sop')">
         <div class="article-icon"><i class="fa-solid fa-diagram-project"></i></div>
         <div class="article-info">
           <div class="article-title">Server Onboarding Stappenplan (SOP)</div>
           <div class="article-meta">
-            <span><i class="fa-regular fa-calendar"></i> 03-08-2026</span>
+            <span><i class="fa-regular fa-calendar"></i> 25-07-2026</span>
             <span class="tag">Processen</span>
           </div>
         </div>
@@ -338,13 +375,13 @@
 
   </div>
 
-  <!-- BEELDVULLENDE ARTIKEL VIEWS (MET TERUG KNOP) -->
+  <!-- BEELDVULLENDE ARTIKEL VIEWS -->
 
   <!-- 1. Detail View: Hosting Dashboard -->
   <div class="detail-view" id="detail-dashboard">
     <div class="detail-header">
       <button class="back-btn" onclick="closeDetail()"><i class="fa-solid fa-arrow-left"></i> Terug</button>
-      <span class="tag">Hosting Dashboard</span>
+      <span class="tag">Dashboard</span>
     </div>
     <div class="detail-content">
       <h2 class="detail-title">Hosting Performance Dashboard</h2>
@@ -378,43 +415,115 @@
     </div>
   </div>
 
-  <!-- 2. Detail View: ABCDE Klanten -->
+  <!-- 2. Detail View: ABCDE Klanten (Met Redenen & Ranking) -->
   <div class="detail-view" id="detail-klanten">
     <div class="detail-header">
       <button class="back-btn" onclick="closeDetail()"><i class="fa-solid fa-arrow-left"></i> Terug</button>
-      <span class="tag">ABCDE Klanten</span>
+      <span class="tag">Klanten</span>
     </div>
     <div class="detail-content">
-      <h2 class="detail-title">ABCDE Klanten Segmentatie</h2>
-      <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:16px;">Overzicht van klantgroepen op basis van verbruik.</p>
+      <h2 class="detail-title">ABCDE Klanten Ranking & Redenen</h2>
+      <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:16px;">Segmentatie, onderbouwing en wat het team vindt van deze klantgroepen.</p>
 
+      <!-- A Klant -->
       <div class="tier-card">
-        <span class="tier-badge tier-A">A-Klant (Enterprise)</span>
-        <div style="font-weight:600;">jktranslate.com</div>
-        <div style="font-size:0.8rem; color:var(--text-muted);">Opslag: 84.7 GB • Traffic: 37 GB/m</div>
+        <div class="tier-header">
+          <span style="font-weight:700;">#1 High Value (jktranslate.com)</span>
+          <span class="tier-badge tier-A">A-Klant</span>
+        </div>
+        <div class="reason-box"><strong>Reden voor A-status:</strong> Hoge omzet (€600+/mnd), altijd snelle betaling, maakt gebruik van Dedicated Resources (84.7 GB storage).</div>
+        <div class="opinion-box">💭 <strong>Wat het team denkt:</strong> "Top klant, reageert professioneel op tickets. Prioriteit op support altijd direct oppakken!"</div>
       </div>
 
+      <!-- B Klant -->
       <div class="tier-card">
-        <span class="tier-badge tier-B">B-Klant (Groeier)</span>
-        <div style="font-weight:600;">keencoffee.com</div>
-        <div style="font-size:0.8rem; color:var(--text-muted);">Opslag: 8.5 GB • Traffic: 5 GB/m</div>
+        <div class="tier-header">
+          <span style="font-weight:700;">#2 Stable Growth (keencoffee.com)</span>
+          <span class="tier-badge tier-B">B-Klant</span>
+        </div>
+        <div class="reason-box"><strong>Reden voor B-status:</strong> Goede vaste marge (€250/mnd), groeit gestaag in dataverkeer, zelden ingewikkelde supportvragen.</div>
+        <div class="opinion-box">💭 <strong>Wat het team denkt:</strong> "Fijne klant. Kansen om volgend jaar upsell naar Managed Care package aan te bieden."</div>
       </div>
 
+      <!-- C Klant -->
       <div class="tier-card">
-        <span class="tier-badge tier-C">C-Klant (Standaard)</span>
-        <div style="font-weight:600;">backtoblackcoffee.nl</div>
-        <div style="font-size:0.8rem; color:var(--text-muted);">Opslag: 3.2 GB • Traffic: 1.1 GB/m</div>
+        <div class="tier-header">
+          <span style="font-weight:700;">#3 Standard Hosting (backtoblackcoffee.nl)</span>
+          <span class="tier-badge tier-C">C-Klant</span>
+        </div>
+        <div class="reason-box"><strong>Reden voor C-status:</strong> Standaard hostingpakket (€45/mnd), beperkte marge, vraagt af en toe e-mail support.</div>
+        <div class="opinion-box">💭 <strong>Wat het team denkt:</strong> "Prima basisklant. Geen bijzonderheden, vergt weinig onderhoud."</div>
       </div>
 
+      <!-- D Klant -->
       <div class="tier-card">
-        <span class="tier-badge tier-E">E-Klant (Opruimen)</span>
-        <div style="font-weight:600;">41 Inactieve testomgevingen</div>
-        <div style="font-size:0.8rem; color:var(--text-muted);">Kan opgeruimd worden om schijfruimte te besparen.</div>
+        <div class="tier-header">
+          <span style="font-weight:700;">#4 High Maintenance (seminautic.nl)</span>
+          <span class="tier-badge tier-D">D-Klant</span>
+        </div>
+        <div class="reason-box"><strong>Reden voor D-status:</strong> Lage omzet (€15/mnd), maar extreem veel supporttickets en weigert te upgraden vanaf oude PHP versies.</div>
+        <div class="opinion-box">💭 <strong>Wat het team denkt:</strong> "Kost meer tijd dan het oplevert. Aanbod doen voor tariefverhoging of laten migreren."</div>
       </div>
+
+      <!-- E Klant -->
+      <div class="tier-card">
+        <div class="tier-header">
+          <span style="font-weight:700;">#5 Inactief / Opruimen (41 sites)</span>
+          <span class="tier-badge tier-E">E-Klant</span>
+        </div>
+        <div class="reason-box"><strong>Reden voor E-status:</strong> Opgezegd, verlopen of oude test/dev omgevingen die niet meer worden betaald.</div>
+        <div class="opinion-box">💭 <strong>Wat het team denkt:</strong> "Meteens opruimen! Neemt onnodig diskspace in beslag op de Rory/Clara servers."</div>
+      </div>
+
     </div>
   </div>
 
-  <!-- 3. Detail View: SQL Query -->
+  <!-- 3. Detail View: SSL Certificaten Handmatig Vernieuwen -->
+  <div class="detail-view" id="detail-ssl">
+    <div class="detail-header">
+      <button class="back-btn" onclick="closeDetail()"><i class="fa-solid fa-arrow-left"></i> Terug</button>
+      <span class="tag">Beveiliging</span>
+    </div>
+    <div class="detail-content">
+      <h2 class="detail-title">SSL Certificaten Handmatig Vernieuwen</h2>
+      <p style="color:var(--text-muted); font-size:0.85rem;">Wanneer Let's Encrypt auto-renew faalt bij Cloudflare proxy DNS.</p>
+      
+      <div class="example-box"># 1. SSH inloggen op de betreffende server:
+ssh root@server-ip
+
+# 2. Voer Certbot uit met DNS challenge:
+certbot certonly --manual --preferred-challenges dns -d domein.nl -d *.domein.nl
+
+# 3. Voeg het TXT record toe in Cloudflare DNS panel:
+# Type: TXT | Name: _acme-challenge | Value: [gegenereerde-hash]
+
+# 4. Herstart NGINX:
+sudo systemctl restart nginx</div>
+    </div>
+  </div>
+
+  <!-- 4. Detail View: WP Malware Opschonen -->
+  <div class="detail-view" id="detail-malware">
+    <div class="detail-header">
+      <button class="back-btn" onclick="closeDetail()"><i class="fa-solid fa-arrow-left"></i> Terug</button>
+      <span class="tag">Beveiliging</span>
+    </div>
+    <div class="detail-content">
+      <h2 class="detail-title">WP Malware Opschonen via WP-CLI</h2>
+      <p style="color:var(--text-muted); font-size:0.85rem;">Snelle stappen om besmette bestanden te vervangen met schone WordPress core bestanden.</p>
+      
+      <div class="example-box"># 1. Controleer integriteit van de WordPress bestanden:
+wp core verify-checksums
+
+# 2. Herinstalleer de schone WP Core zonder wp-content aan te raken:
+wp core download --skip-content --force
+
+# 3. Re-install alle geactiveerde plugins vanuit de repo:
+wp plugin install $(wp plugin list --field=name) --force</div>
+    </div>
+  </div>
+
+  <!-- 5. Detail View: SQL Query -->
   <div class="detail-view" id="detail-sql">
     <div class="detail-header">
       <button class="back-btn" onclick="closeDetail()"><i class="fa-solid fa-arrow-left"></i> Terug</button>
@@ -431,7 +540,26 @@ ORDER BY due_date ASC;</div>
     </div>
   </div>
 
-  <!-- 4. Detail View: SOP Stappenplan -->
+  <!-- 6. Detail View: PHP Limieten Config -->
+  <div class="detail-view" id="detail-php">
+    <div class="detail-header">
+      <button class="back-btn" onclick="closeDetail()"><i class="fa-solid fa-arrow-left"></i> Terug</button>
+      <span class="tag">Systeem & Data</span>
+    </div>
+    <div class="detail-content">
+      <h2 class="detail-title">PHP Memory Limit & Max Execution Config</h2>
+      <p style="color:var(--text-muted); font-size:0.85rem;">Aanbevolen `php.ini` en `.htaccess` instellingen voor WooCommerce webshops.</p>
+      
+      <div class="example-box">; In php.ini of Ploi/Cloudways PHP settings:
+memory_limit = 512M
+max_execution_time = 300
+upload_max_filesize = 64M
+post_max_size = 64M
+max_input_vars = 3000</div>
+    </div>
+  </div>
+
+  <!-- 7. Detail View: SOP Stappenplan -->
   <div class="detail-view" id="detail-sop">
     <div class="detail-header">
       <button class="back-btn" onclick="closeDetail()"><i class="fa-solid fa-arrow-left"></i> Terug</button>
@@ -493,17 +621,35 @@ ORDER BY due_date ASC;</div>
           card.style.display = 'none';
         }
       });
+      updateResultsCount();
     }
 
-    // ZOEKFUNCTIE
+    // SLIMME ZOEKFUNCTIE (Doorzoekt titel, categorie EN de bijbehorende detailpagina-inhoud/code!)
     function searchCards() {
       const query = document.getElementById('searchInput').value.toLowerCase();
       const cards = document.querySelectorAll('.list-section .article-card');
 
       cards.forEach(card => {
-        const text = card.innerText.toLowerCase();
-        card.style.display = text.includes(query) ? 'flex' : 'none';
+        // Haal het ID op van de gekoppelde detailpagina
+        const onclickAttr = card.getAttribute('onclick');
+        const detailId = onclickAttr.match(/'([^']+)'/)[1];
+        const detailContent = document.getElementById(detailId).innerText.toLowerCase();
+        
+        const cardText = card.innerText.toLowerCase();
+
+        // Zoek zowel in het kaartje als in de volledige artikel-inhoud
+        if (cardText.includes(query) || detailContent.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
       });
+      updateResultsCount();
+    }
+
+    function updateResultsCount() {
+      const visibleCards = document.querySelectorAll('.list-section .article-card[style*="display: flex"], .list-section .article-card:not([style*="display: none"])').length;
+      document.getElementById('results-count').innerText = `Gevonden Artikelen (${visibleCards})`;
     }
 
     // CHAT OVERLAY
