@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kennisbank & Operations Portal</title>
+  <title>Kennisbank Main & Operations</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -11,7 +11,7 @@
     :root {
       --bg-app: #f8fafc;
       --card-bg: #ffffff;
-      --primary: #2563eb;       /* Modern helder blauw */
+      --primary: #2563eb;
       --primary-light: #eff6ff;
       --text-main: #0f172a;
       --text-muted: #64748b;
@@ -23,9 +23,9 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
     body { background-color: var(--bg-app); color: var(--text-main); }
 
-    /* Container */
+    /* Mobiele Container */
     .app-container {
-      max-width: 480px; /* Perfect voor mobiel & responsive op desktop */
+      max-width: 480px;
       margin: 0 auto;
       min-height: 100vh;
       background: var(--bg-app);
@@ -33,7 +33,7 @@
       padding-bottom: 80px;
     }
 
-    /* Header */
+    /* Header & Navigatie */
     .header {
       background: var(--card-bg);
       padding: 16px 20px 8px 20px;
@@ -53,13 +53,13 @@
     .header h1 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
     .user-pill { font-size: 0.85rem; background: var(--primary-light); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 600; }
 
-    /* Tab Navigatie */
+    /* Horizontal Scroll Nav Tabs */
     .nav-tabs {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       overflow-x: auto;
       scrollbar-width: none;
-      padding-bottom: 8px;
+      padding-bottom: 4px;
     }
 
     .tab-btn {
@@ -72,6 +72,7 @@
       cursor: pointer;
       white-space: nowrap;
       border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
     }
 
     .tab-btn.active {
@@ -79,7 +80,7 @@
       border-bottom-color: var(--primary);
     }
 
-    /* Zoekbalk & Filters */
+    /* Zoekbalk & Filter Chips */
     .search-section { padding: 16px 20px 8px 20px; }
     
     .search-bar {
@@ -99,7 +100,6 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
 
-    /* Filter-chips */
     .filter-chips {
       display: flex;
       gap: 8px;
@@ -118,17 +118,18 @@
       color: var(--text-muted);
       cursor: pointer;
       font-weight: 500;
+      transition: all 0.15s ease;
     }
 
     .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* Content Secties */
+    /* Content Secties Switch */
     .content-section { padding: 8px 20px 20px 20px; display: none; }
     .content-section.active { display: block; }
 
     .results-count { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* Cards */
+    /* Card & Artikel Styling */
     .card {
       background: var(--card-bg);
       border-radius: var(--radius);
@@ -140,9 +141,15 @@
 
     .article-card {
       display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .article-card-header {
+      display: flex;
       gap: 12px;
-      text-decoration: none;
-      color: inherit;
+      align-items: center;
     }
 
     .article-icon {
@@ -164,14 +171,42 @@
 
     .tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; background: #f1f5f9; color: var(--text-muted); }
 
-    /* Dashboard Grid Componenten */
+    /* Uitklapbaar Echt Voorbeeld in Artikel */
+    .article-body {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+      font-size: 0.85rem;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .article-card.open .article-body { display: block; }
+
+    .example-box {
+      background: #f1f5f9;
+      border-left: 3px solid var(--primary);
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+
+    /* Dashboard Widgets */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
     .stat-card { background: var(--card-bg); padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); }
     .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
     .stat-value { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-top: 4px; }
 
-    /* ABCDE Badges */
-    .tier-badge { font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px; }
+    .server-list { font-size: 0.85rem; display: flex; flex-direction: column; gap: 10px; }
+    .server-item { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 6px; }
+
+    /* ABCDE Klanten Badges */
+    .tier-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px; text-transform: uppercase; }
     .tier-A { background: #d1fae5; color: #065f46; }
     .tier-B { background: #dbeafe; color: #1e40af; }
     .tier-C { background: #f1f5f9; color: #475569; }
@@ -255,7 +290,6 @@
     .icon-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); padding: 6px; cursor: pointer; }
     .send-btn { background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-    /* Disclaimer in Chat */
     .privacy-notice {
       font-size: 0.72rem;
       color: var(--text-muted);
@@ -268,78 +302,134 @@
 
   <div class="app-container">
 
-    <!-- Header -->
+    <!-- Header & Navigatie naar Extra Pagina's -->
     <header class="header">
       <div class="header-top">
-        <h1 id="page-title">Kennisbank</h1>
+        <h1 id="page-title">Kennisbank Main</h1>
         <span class="user-pill">Tim M.</span>
       </div>
 
-      <!-- Navigatie Tabs (JS Powered) -->
+      <!-- In-page JavaScript Tab Switching -->
       <nav class="nav-tabs">
-        <button class="tab-btn active" onclick="switchPage('kennisbank', this)">Kennisbank</button>
-        <button class="tab-btn" onclick="switchPage('dashboard', this)">Hosting Dashboard</button>
-        <button class="tab-btn" onclick="switchPage('klanten', this)">ABCDE Klanten</button>
+        <button class="tab-btn active" onclick="switchPage('kennisbank', this)">📚 Kennisbank</button>
+        <button class="tab-btn" onclick="switchPage('dashboard', this)">📊 Hosting Dashboard</button>
+        <button class="tab-btn" onclick="switchPage('klanten', this)">🏷️ ABCDE Klanten</button>
       </nav>
     </header>
 
-    <!-- ZOEK & FILTERS (Zichtbaar op Kennisbank) -->
+    <!-- ZOEKBALK EN CATEGORIE CHIPS (Main Kennisbank Component) -->
     <section class="search-section" id="search-section">
       <div class="search-bar">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Zoek op artikel, proces, status...">
+        <input type="text" id="searchInput" onkeyup="searchCards()" placeholder="Zoek artikel, SQL query, SOP...">
       </div>
 
       <div class="filter-chips">
         <div class="chip active" onclick="filterCategory('alles', this)">Alles</div>
-        <div class="chip" onclick="filterCategory('kennis', this)">Kennis & Richtlijnen</div>
-        <div class="chip" onclick="filterCategory('processen', this)">Processen</div>
         <div class="chip" onclick="filterCategory('systeem', this)">Systeem & Data</div>
+        <div class="chip" onclick="filterCategory('processen', this)">Processen & SOP</div>
+        <div class="chip" onclick="filterCategory('kennis', this)">Security & Richtlijnen</div>
         <div class="chip" onclick="filterCategory('organisatie', this)">Organisatie</div>
       </div>
     </section>
 
-    <!-- PAGINA 1: KENNISBANK -->
+    <!-- MAIN SCHERM: KENNISBANK ARTIKELEN (Met echte voorbeelden) -->
     <section class="content-section active" id="page-kennisbank">
-      <div class="results-count">Gecategoriseerde Artikelen</div>
+      <div class="results-count">Artikelen Overview (Klik om te openen)</div>
 
-      <a href="#" class="card article-card" data-cat="systeem">
-        <div class="article-icon"><i class="fa-solid fa-code"></i></div>
-        <div class="article-info">
-          <div class="article-title">TeamworkPM SQL inzichtpagina</div>
-          <div class="article-meta">
-            <span><i class="fa-regular fa-calendar"></i> 04-08-2026</span>
-            <span class="tag">Systeem & Data</span>
+      <!-- Artikel 1 -->
+      <div class="card article-card" data-cat="systeem" onclick="toggleArticle(this)">
+        <div class="article-card-header">
+          <div class="article-icon"><i class="fa-solid fa-code"></i></div>
+          <div class="article-info">
+            <div class="article-title">TeamworkPM SQL Inzichtpagina Query</div>
+            <div class="article-meta">
+              <span><i class="fa-regular fa-calendar"></i> 04-08-2026</span>
+              <span class="tag">Systeem & Data</span>
+            </div>
           </div>
         </div>
-      </a>
+        <div class="article-body">
+          <p>Gebruik deze query om snel alle lopende taken van een specifiek project op te halen uit de SQL database van TeamworkPM:</p>
+          <div class="example-box">SELECT task_id, task_title, assigned_to, due_date 
+FROM teamwork_tasks 
+WHERE project_id = 4821 AND status = 'OPEN' 
+ORDER BY due_date ASC;</div>
+        </div>
+      </div>
 
-      <a href="#" class="card article-card" data-cat="processen">
-        <div class="article-icon"><i class="fa-solid fa-diagram-project"></i></div>
-        <div class="article-info">
-          <div class="article-title">Projecten Workflow SOP</div>
-          <div class="article-meta">
-            <span><i class="fa-regular fa-calendar"></i> 03-08-2026</span>
-            <span class="tag">Processen</span>
+      <!-- Artikel 2 -->
+      <div class="card article-card" data-cat="processen" onclick="toggleArticle(this)">
+        <div class="article-card-header">
+          <div class="article-icon"><i class="fa-solid fa-diagram-project"></i></div>
+          <div class="article-info">
+            <div class="article-title">Stappenplan: Nieuwe Hosting Server Onboarding</div>
+            <div class="article-meta">
+              <span><i class="fa-regular fa-calendar"></i> 03-08-2026</span>
+              <span class="tag">Processen & SOP</span>
+            </div>
           </div>
         </div>
-      </a>
+        <div class="article-body">
+          <p>Standaard werkwijze (SOP) bij het aanmaken van een nieuwe klantomgeving op Ploi / Cloudways:</p>
+          <div class="example-box">1. Maak server instantie aan in Cloudways (PHP 8.2+, MySQL 8.0)
+2. Koppel DNS NSI records via Cloudflare
+3. Voer SSH beveiligingsscript uit:
+   sudo bash /scripts/harden-server.sh --domain example.com
+4. Test SSL Certificaat en activeer automatisch back-up schema.</div>
+        </div>
+      </div>
 
-      <a href="#" class="card article-card" data-cat="kennis">
-        <div class="article-icon"><i class="fa-solid fa-book"></i></div>
-        <div class="article-info">
-          <div class="article-title">Beveiliging & AVG Richtlijnen</div>
-          <div class="article-meta">
-            <span><i class="fa-regular fa-calendar"></i> 01-08-2026</span>
-            <span class="tag">Kennis & Richtlijnen</span>
+      <!-- Artikel 3 -->
+      <div class="card article-card" data-cat="kennis" onclick="toggleArticle(this)">
+        <div class="article-card-header">
+          <div class="article-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="article-info">
+            <div class="article-title">AVG & Privacy Richtlijnen voor AI-Prompts</div>
+            <div class="article-meta">
+              <span><i class="fa-regular fa-calendar"></i> 01-08-2026</span>
+              <span class="tag">Security & Richtlijnen</span>
+            </div>
           </div>
         </div>
-      </a>
+        <div class="article-body">
+          <p>Richtlijn voor het anoniem verwerken van klantdata in de AI-assistant:</p>
+          <div class="example-box">❌ FOUT PROMPT:
+"Hier is de database dump van Klant X (Jan de Vries, info@jan.nl, BSN 1234)..."
+
+✅ GOED PROMPT:
+"Analyseer onderstaande geanonimiseerde JSON structuur op fouten:
+{ 'user_id': 'USR_9921', 'status': 'ACTIVE', 'plan': 'PRO' }"</div>
+        </div>
+      </div>
+
+      <!-- Artikel 4 -->
+      <div class="card article-card" data-cat="organisatie" onclick="toggleArticle(this)">
+        <div class="article-card-header">
+          <div class="article-icon"><i class="fa-solid fa-users"></i></div>
+          <div class="article-info">
+            <div class="article-title">Team Brainstorm: Categorisering Afspraken</div>
+            <div class="article-meta">
+              <span><i class="fa-regular fa-calendar"></i> 28-07-2026</span>
+              <span class="tag">Organisatie</span>
+            </div>
+          </div>
+        </div>
+        <div class="article-body">
+          <p>Uitkomst van de denksessie over de indeling van de ABCDE klanten:</p>
+          <div class="example-box">A-Klant: >€500/mnd OF >20GB storage.
+B-Klant: €150-€500/mnd met actieve SLA.
+C-Klant: Standaard hosting (<€150/mnd).
+D-Klant: Vraagt veel support, lage marge.
+E-Klant: Inactief / mag opgeruimd worden.</div>
+        </div>
+      </div>
+
     </section>
 
-    <!-- PAGINA 2: HOSTING DASHBOARD -->
+    <!-- EXTRA PAGINA 1: HOSTING DASHBOARD -->
     <section class="content-section" id="page-dashboard">
-      <div class="results-count">Performance & Capaciteit</div>
+      <div class="results-count">Hosting Performance & Stats</div>
 
       <div class="stats-grid">
         <div class="stat-card">
@@ -361,42 +451,49 @@
       </div>
 
       <div class="card">
-        <div class="article-title" style="margin-bottom:10px;">Server Verdeling</div>
-        <div style="font-size:0.85rem; color:var(--text-muted); display:flex; flex-direction:column; gap:8px;">
-          <div style="display:flex; justify-between;"><span>Rory Server</span><strong>189 sites</strong></div>
-          <div style="display:flex; justify-between;"><span>Cloudways</span><strong>151 sites</strong></div>
-          <div style="display:flex; justify-between;"><span>Clara Server</span><strong>133 sites</strong></div>
-          <div style="display:flex; justify-between;"><span>Kinsta</span><strong>43 sites</strong></div>
+        <div class="article-title" style="margin-bottom:12px;">Server Verdeling</div>
+        <div class="server-list">
+          <div class="server-item"><span>Rory Server</span><strong>189 sites</strong></div>
+          <div class="server-item"><span>Cloudways</span><strong>151 sites</strong></div>
+          <div class="server-item"><span>Clara Server</span><strong>133 sites</strong></div>
+          <div class="server-item"><span>Kinsta</span><strong>43 sites</strong></div>
+          <div class="server-item"><span>Ploi</span><strong>26 sites</strong></div>
         </div>
       </div>
     </section>
 
-    <!-- PAGINA 3: ABCDE KLANTEN -->
+    <!-- EXTRA PAGINA 2: ABCDE KLANTEN -->
     <section class="content-section" id="page-klanten">
-      <div class="results-count">Geautomatiseerde Segmentatie</div>
+      <div class="results-count">Klant Segmentatie Overzicht</div>
 
       <div class="card">
-        <span class="tier-badge tier-A">Tier A — Enterprise</span>
+        <span class="tier-badge tier-A">A-Klant (Enterprise)</span>
         <div class="article-title">jktranslate.com</div>
         <div class="article-meta"><span>Opslag: 84.7 GB</span> • <span>Traffic: 37 GB/m</span></div>
       </div>
 
       <div class="card">
-        <span class="tier-badge tier-B">Tier B — Groeier</span>
+        <span class="tier-badge tier-B">B-Klant (Groeier)</span>
         <div class="article-title">keencoffee.com</div>
         <div class="article-meta"><span>Opslag: 8.5 GB</span> • <span>Traffic: 5 GB/m</span></div>
       </div>
 
       <div class="card">
-        <span class="tier-badge tier-C">Tier C — Standaard</span>
+        <span class="tier-badge tier-C">C-Klant (Standaard)</span>
         <div class="article-title">backtoblackcoffee.nl</div>
         <div class="article-meta"><span>Opslag: 3.2 GB</span> • <span>Traffic: 1.1 GB/m</span></div>
       </div>
 
       <div class="card">
-        <span class="tier-badge tier-E">Tier E — Opruimen</span>
+        <span class="tier-badge tier-D">D-Klant (Low Margin)</span>
+        <div class="article-title">seminautic.nl</div>
+        <div class="article-meta"><span>Status: On Hold / Legacy PHP</span></div>
+      </div>
+
+      <div class="card">
+        <span class="tier-badge tier-E">E-Klant (Opruimen)</span>
         <div class="article-title">old-project-test.dev</div>
-        <div class="article-meta"><span>Status: Inactief</span> • <span>Opslag: 15 GB</span></div>
+        <div class="article-meta"><span>Status: Inactief (41 totaal)</span></div>
       </div>
     </section>
 
@@ -422,7 +519,7 @@
       <div class="chat-footer">
         <div class="chat-input-row">
           <button class="icon-btn" title="Afbeelding uploaden"><i class="fa-solid fa-image"></i></button>
-          <input type="text" id="chatInput" placeholder="Typ een bericht...">
+          <input type="text" id="chatInput" placeholder="Typ een bericht..." onkeypress="handleKeyPress(event)">
           <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
         <!-- PRIVACY DISCLAIMER -->
@@ -435,29 +532,31 @@
   </div>
 
   <script>
-    // PAGE SWITCHER
+    // 1. NAVIGATION SWITCHER (Kennisbank = Main, overig = Extra)
     function switchPage(pageId, btn) {
-      // Update Tab Styling
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      // Update Page Title
       const titles = {
-        'kennisbank': 'Kennisbank',
+        'kennisbank': 'Kennisbank Main',
         'dashboard': 'Hosting Dashboard',
         'klanten': 'ABCDE Klanten'
       };
       document.getElementById('page-title').innerText = titles[pageId];
 
-      // Hide Search Bar if not on Kennisbank
+      // Toon/verberg zoekbalk (alleen voor Main Kennisbank)
       document.getElementById('search-section').style.display = (pageId === 'kennisbank') ? 'block' : 'none';
 
-      // Switch Visible Section
       document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
       document.getElementById('page-' + pageId).classList.add('active');
     }
 
-    // FILTER CHIPS (Kennisbank)
+    // 2. TOGGLE ARTIKEL VOORBEELD IN / UITKLAPPEN
+    function toggleArticle(cardElement) {
+      cardElement.classList.toggle('open');
+    }
+
+    // 3. CATEGORIE FILTER CHIPS
     function filterCategory(cat, chipBtn) {
       document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
       chipBtn.classList.add('active');
@@ -472,12 +571,26 @@
       });
     }
 
-    // CHAT TOGGLE
+    // 4. LIVE ZOEKFUNCTIE IN KENNISBANK
+    function searchCards() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('#page-kennisbank .article-card');
+
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(query) ? 'flex' : 'none';
+      });
+    }
+
+    // 5. CHAT OVERLAY LOGICA
     function toggleChat() {
       document.getElementById('chatModal').classList.toggle('open');
     }
 
-    // DUMMY CHAT SEND
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') sendMessage();
+    }
+
     function sendMessage() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
@@ -485,7 +598,6 @@
 
       const body = document.getElementById('chatBody');
       
-      // Add User Message
       const userMsg = document.createElement('div');
       userMsg.className = 'msg user';
       userMsg.innerText = text;
@@ -494,14 +606,13 @@
       input.value = '';
       body.scrollTop = body.scrollHeight;
 
-      // Dummy AI Reply
       setTimeout(() => {
         const botMsg = document.createElement('div');
         botMsg.className = 'msg bot';
-        botMsg.innerText = "Ik heb je vraag ontvangen! Ik zoek nu in de documentatie naar antwoorden over: " + text;
+        botMsg.innerText = "Ik zoek het voor je op in de Kennisbank voor de vraag: " + text;
         body.appendChild(botMsg);
         body.scrollTop = body.scrollHeight;
-      }, 600);
+      }, 500);
     }
   </script>
 </body>
