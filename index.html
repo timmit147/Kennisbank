@@ -3,314 +3,265 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kennisbank</title>
-  <!-- Google Fonts & FontAwesome Icons (Optioneel) -->
+  <title>Kennisbank & Chat Assistant</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --primary-color: #0f766e; /* Strakke moderne groen/teal tint */
+      --primary-color: #0f766e;
       --primary-hover: #0d9488;
       --bg-color: #f8fafc;
       --card-bg: #ffffff;
       --text-main: #1e293b;
       --text-muted: #64748b;
       --border-color: #e2e8f0;
-      --radius: 10px;
+      --radius: 12px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); padding: 20px 15px; }
+    .container { max-width: 800px; margin: 0 auto; }
 
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      padding: 20px 15px;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    /* Header & User Nav */
-    .top-bar {
+    /* Top Navigation Tabs */
+    .view-tabs {
       display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      margin-bottom: 15px;
-      font-size: 0.9rem;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px;
     }
 
-    .user-info {
-      color: var(--text-muted);
-      margin-right: 12px;
-    }
-
-    .btn-logout {
-      color: var(--primary-color);
+    .tab-btn {
+      background: none;
+      border: none;
+      font-size: 1rem;
       font-weight: 600;
-      text-decoration: none;
-      padding: 6px 12px;
-      border: 1px solid var(--primary-color);
-      border-radius: 6px;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       transition: all 0.2s;
     }
 
-    .btn-logout:hover {
+    .tab-btn.active {
       background-color: var(--primary-color);
       color: white;
     }
 
-    h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    /* Filter & Zoeksectie */
-    .filter-card {
+    /* Chat Section Container */
+    .chat-container {
       background: var(--card-bg);
-      padding: 20px;
       border-radius: var(--radius);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
       border: 1px solid var(--border-color);
-      margin-bottom: 25px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      height: 550px;
+      overflow: hidden;
     }
 
-    .search-box {
-      position: relative;
-      margin-bottom: 15px;
+    /* Chat Messages Window */
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background: #fafafa;
     }
 
-    .search-box i {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
+    .message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      line-height: 1.4;
     }
 
-    .search-box input {
+    .message.user {
+      align-self: flex-end;
+      background-color: var(--primary-color);
+      color: white;
+      border-bottom-right-radius: 2px;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background-color: #e2e8f0;
+      color: var(--text-main);
+      border-bottom-left-radius: 2px;
+    }
+
+    /* Afbeeldingen in chatbericht */
+    .message-image {
       width: 100%;
-      padding: 12px 12px 12px 40px;
+      max-width: 250px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: block;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* Upload Preview Area */
+    .upload-preview {
+      display: flex;
+      gap: 10px;
+      padding: 8px 15px;
+      background: #f1f5f9;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .preview-thumb {
+      position: relative;
+      width: 50px;
+      height: 50px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .preview-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .preview-thumb .remove-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Chat Input Form */
+    .chat-input-area {
+      padding: 12px 15px;
+      background: white;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-input-area input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.2s;
+      font-size: 0.95rem;
     }
 
-    .search-box input:focus {
+    .chat-input-area input[type="text"]:focus {
       border-color: var(--primary-color);
     }
 
-    .dropdown-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 10px;
-      margin-bottom: 15px;
+    .btn-icon {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
     }
 
-    select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid var(--border-color);
+    .btn-icon:hover {
+      background: #f1f5f9;
+      color: var(--primary-color);
+    }
+
+    .btn-send {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 16px;
       border-radius: 8px;
-      background-color: white;
-      color: var(--text-main);
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    /* Checkbox / Toon velden opties */
-    .checkbox-title {
-      font-size: 0.8rem;
       font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
-
-    .checkbox-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .checkbox-group label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
-      cursor: pointer;
     }
 
-    .checkbox-group input[type="checkbox"] {
-      accent-color: var(--primary-color);
+    .btn-send:hover {
+      background-color: var(--primary-hover);
     }
 
-    /* Resultaten header */
-    .results-count {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 15px;
-      font-weight: 500;
-    }
-
-    /* Kennisbank Kaarten */
-    .article-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .article-card {
-      background: var(--card-bg);
-      padding: 18px 20px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border-color);
-      text-decoration: none;
-      color: inherit;
-      display: block;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .article-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-      border-color: var(--primary-hover);
-    }
-
-    .article-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .article-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .badge {
-      background-color: #e0f2fe;
-      color: #0369a1;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 4px 8px;
-      border-radius: 20px;
-      white-space: nowrap;
-    }
-
-    .article-meta {
-      display: flex;
-      gap: 15px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .article-meta span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
+    /* Verberg het standaard HTML-bestandsupload element */
+    #file-input { display: none; }
   </style>
 </head>
 <body>
 
   <div class="container">
     
-    <!-- Top Navigatie -->
-    <div class="top-bar">
-      <span class="user-info">Tim Meeuwsen</span>
-      <a href="#" class="btn-logout">Uitloggen</a>
+    <!-- Tab Bladen -->
+    <div class="view-tabs">
+      <button class="tab-btn"><i class="fa-solid fa-book"></i> Kennisbank</button>
+      <button class="tab-btn active"><i class="fa-solid fa-comments"></i> Chat & Invoer</button>
     </div>
 
-    <h1>Kennisbank</h1>
+    <!-- Chat Interface -->
+    <div class="chat-container">
+      
+      <!-- Berichtenvenster -->
+      <div class="chat-messages">
+        <div class="message bot">
+          Hallo Tim! Stel hier een vraag of upload een afbeelding/document om direct aan de kennisbank toe te voegen.
+        </div>
 
-    <!-- Filter Kaart -->
-    <div class="filter-card">
-      <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Zoeken in kennisbank...">
+        <div class="message user">
+          Hier is een schermafbeelding van de foutmelding bij TeamworkPM:
+          <!-- Voorbeeld van een meegestuurde afbeelding -->
+          <img src="https://via.placeholder.com/300x180?text=Foutmelding+Screenshot" alt="Uploaded Image" class="message-image">
+        </div>
+
+        <div class="message bot">
+          Bedankt! Ik heb de afbeelding geanalyseerd en opgeslagen onder de categorie **Software / TeamworkPM**. Wil je een korte omschrijving toevoegen?
+        </div>
       </div>
 
-      <div class="dropdown-grid">
-        <select>
-          <option value="">Alle categorieën</option>
-          <option value="automatisering">Automatisering</option>
-          <option value="proces">Proces</option>
-          <option value="security">Security</option>
-          <option value="workflow">Workflow</option>
-        </select>
-
-        <select>
-          <option value="">Alle personen</option>
-        </select>
-
-        <select>
-          <option value="nieuwste">Nieuwste eerst</option>
-          <option value="oudste">Oudste eerst</option>
-        </select>
+      <!-- Preview van de geselecteerde afbeelding (optioneel via JS aan te sturen) -->
+      <div class="upload-preview">
+        <div class="preview-thumb">
+          <img src="https://via.placeholder.com/100" alt="Preview">
+          <button class="remove-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
       </div>
 
-      <div class="checkbox-title">Zichtbare kolommen / details</div>
-      <div class="checkbox-group">
-        <label><input type="checkbox" checked> Datum/tijd</label>
-        <label><input type="checkbox"> Categorie</label>
-        <label><input type="checkbox"> Persoon</label>
-        <label><input type="checkbox"> Beschrijving</label>
-        <label><input type="checkbox"> Tags</label>
-        <label><input type="checkbox"> Bestand</label>
-      </div>
-    </div>
+      <!-- Invoer Balk -->
+      <form class="chat-input-area" onsubmit="event.preventDefault();">
+        <!-- Verborgen File Input -->
+        <input type="file" id="file-input" accept="image/*">
+        
+        <!-- Bijlage / Afbeelding Knop -->
+        <button type="button" class="btn-icon" onclick="document.getElementById('file-input').click();" title="Afbeelding toevoegen">
+          <i class="fa-solid fa-paperclip"></i>
+        </button>
 
-    <!-- Resultaten teller -->
-    <div class="results-count">35 resultaten gevonden</div>
-
-    <!-- Lijst van resultaten (Cards) -->
-    <div class="article-list">
-
-      <a href="#" class="article-card">
-        <div class="article-header">
-          <div class="article-title">TeamworkPM SQL inzichtpagina</div>
-          <span class="badge">Automatisering</span>
-        </div>
-        <div class="article-meta">
-          <span><i class="fa-regular fa-calendar"></i> 2026-08-04</span>
-          <span><i class="fa-regular fa-user"></i> Tim Meeuwsen</span>
-        </div>
-      </a>
-
-      <a href="#" class="article-card">
-        <div class="article-header">
-          <div class="article-title">Projecten uit TeamworkPM</div>
-          <span class="badge">Workflow</span>
-        </div>
-        <div class="article-meta">
-          <span><i class="fa-regular fa-calendar"></i> 2026-08-03</span>
-        </div>
-      </a>
-
-      <a href="#" class="article-card">
-        <div class="article-header">
-          <div class="article-title">Klanten uit TeamworkPM</div>
-          <span class="badge">Proces</span>
-        </div>
-        <div class="article-meta">
-          <span><i class="fa-regular fa-calendar"></i> 2026-08-03</span>
-        </div>
-      </a>
+        <input type="text" placeholder="Typ een bericht of stel een vraag...">
+        
+        <button type="submit" class="btn-send">
+          <span>Verstuur</span>
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </form>
 
     </div>
 
