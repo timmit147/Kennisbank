@@ -3,234 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Beheerders Dashboard - Kennisbank & Hosting</title>
-  <!-- Tailwind CSS via CDN -->
+  <title>AI Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 p-4 md:p-8">
+<body class="bg-gray-100 font-sans text-gray-800 p-6">
+  <div class="max-w-3xl mx-auto space-y-6">
+    
+    <!-- Navigatie -->
+    <nav class="flex gap-4 border-b pb-4 text-sm font-medium">
+      <a href="index.html" class="text-blue-600 border-b-2 border-blue-600 pb-1">AI Chat</a>
+      <a href="kennisbank.html" class="text-gray-500 hover:text-gray-800">Kennisbank Structuur</a>
+      <a href="dashboard.html" class="text-gray-500 hover:text-gray-800">Hosting Dashboard</a>
+      <a href="klanten.html" class="text-gray-500 hover:text-gray-800">ABCDE Klanten</a>
+    </nav>
 
-  <div class="max-w-7xl mx-auto space-y-8">
-
-    <!-- HEADER -->
-    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 border-gray-300 gap-4">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900">Beheerders Dashboard</h1>
-        <p class="text-sm text-gray-500">Kennisbank Structuur, Hosting Performance & ABCDE Segmentatie</p>
-      </div>
-      <div class="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-blue-200">
-        Systeemstatus: Operationeel
-      </div>
-    </header>
-
-    <!-- SECTIE 1: CHAT COMPONENT MET PRIVACY DISCLAIMER -->
-    <section class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-      <h2 class="text-base font-semibold text-gray-800 mb-3 flex items-center gap-2">
-        <span>🤖</span> AI Assistent
-      </h2>
-      <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-        <div class="flex gap-2">
-          <input type="text" placeholder="Stel een vraag aan de AI assistant of zoek in de kennisbank..." class="w-full p-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-          <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition">Verstuur</button>
-        </div>
+    <!-- Chat Card -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      <h1 class="text-xl font-bold text-gray-900 mb-4">AI Assistant</h1>
+      
+      <div class="space-y-4">
+        <textarea rows="3" placeholder="Stel een vraag aan de AI assistant..." class="w-full p-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"></textarea>
         
-        <!-- PRIVACY DISCLAIMER -->
-        <div class="flex items-center gap-2 text-xs text-gray-500 mt-2.5 px-1">
-          <svg class="w-4 h-4 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button class="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700">Verstuur</button>
+
+        <!-- Privacy Disclaimer -->
+        <div class="flex items-center gap-2 text-xs text-gray-500 pt-2 border-t border-gray-100">
+          <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0 0v2m0-2h2m-2 0H10m11 0a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span><strong>Privacy:</strong> Deel a.u.b. geen persoonlijke of privacygevoelige informatie in deze chat.</span>
+          <span>🔒 <strong>Privacy:</strong> Deel a.u.b. geen persoonlijke of privacygevoelige informatie in deze chat.</span>
         </div>
       </div>
-    </section>
-
-    <!-- SECTIE 2: KENNISBANK CATEGORIEËN -->
-    <section>
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold text-gray-800">Kennisbank Structuur</h2>
-        <span class="text-xs text-gray-500">4 Hoofdcategorieën</span>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kennisbank-grid">
-        <!-- Dynamisch gevuld via JS -->
-      </div>
-    </section>
-
-    <hr class="border-gray-300">
-
-    <!-- SECTIE 3: HOSTING DASHBOARD STATS (KPI's) -->
-    <section>
-      <h2 class="text-xl font-bold text-gray-800 mb-4">Hosting & Performance Overzicht</h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <p class="text-xs text-gray-500 uppercase font-semibold">Totaal Sites</p>
-          <p class="text-2xl font-bold text-gray-900" id="stat-total">0</p>
-        </div>
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <p class="text-xs text-gray-500 uppercase font-semibold">Actief / Inactief</p>
-          <p class="text-2xl font-bold text-green-600"><span id="stat-active">0</span> <span class="text-xs font-normal text-gray-400">/ <span id="stat-inactive">0</span></span></p>
-        </div>
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <p class="text-xs text-gray-500 uppercase font-semibold">Totale Opslag</p>
-          <p class="text-2xl font-bold text-blue-600" id="stat-storage">0 GB</p>
-        </div>
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <p class="text-xs text-gray-500 uppercase font-semibold">Totaal Dataverkeer</p>
-          <p class="text-2xl font-bold text-indigo-600" id="stat-bandwidth">0 GB/m</p>
-        </div>
-      </div>
-
-      <!-- SECTIE 4: ABCDE KLANTEN TABEL -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <div>
-            <h3 class="text-lg font-bold text-gray-800">Geautomatiseerde ABCDE Klanten Segmentatie</h3>
-            <p class="text-xs text-gray-500">Klanten automatisch ingedeeld op basis van serverload, type site en status.</p>
-          </div>
-          <span class="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full font-medium">Gesorteerd op Prioriteit (A → E)</span>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm text-gray-600">
-            <thead class="bg-gray-50 text-xs uppercase text-gray-500 border-b border-gray-200">
-              <tr>
-                <th class="p-3.5">Domein</th>
-                <th class="p-3.5">Status</th>
-                <th class="p-3.5">Server</th>
-                <th class="p-3.5">Opslag</th>
-                <th class="p-3.5">Traffic</th>
-                <th class="p-3.5">ABCDE Segmentatie</th>
-              </tr>
-            </thead>
-            <tbody id="client-table-body" class="divide-y divide-gray-100">
-              <!-- Dynamisch gevuld via JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+    </div>
 
   </div>
-
-  <!-- JAVASCRIPT CODE -->
-  <script>
-    // 1. DATA: KENNISBANK CATEGORIEËN
-    const kbCategories = [
-      {
-        title: "Kennis & Richtlijnen",
-        icon: "📘",
-        subs: ["Kennis (Achtergrond & Info)", "Richtlijn (Standaarden & Afspraken)", "Leermoment (Retrospectives)"]
-      },
-      {
-        title: "Processen & Operations",
-        icon: "⚙️",
-        subs: ["Proces (SOP's & Stappen)", "Workflow (Werkstromen)", "Automatisering (AI & Scripts)"]
-      },
-      {
-        title: "Systeem & Data",
-        icon: "🗄️",
-        subs: ["Bron (Documentatie & Links)", "Security (AVG, Audits & Protocol)", "Webpagina (Sheets & Overzichten)"]
-      },
-      {
-        title: "Organisatie",
-        icon: "👥",
-        subs: ["Denksessie (Brainstorms & Strategie)", "Teamprofiel (Rollen & Experts)"]
-      }
-    ];
-
-    // 2. DATA: HOSTING DASHBOARD (Gegevensset gebaseerd op je invoer)
-    const rawSites = [
-      { domain: "jktranslate.com", status: "active", server: "Kinsta", storageGB: 84.7, bandwidthGB: 37.0, isWooCommerce: true },
-      { domain: "studioroof.com", status: "active", server: "Cloudways", storageGB: 64.0, bandwidthGB: 2.1, isWooCommerce: true },
-      { domain: "sdk-kinderopvang.nl", status: "active", server: "Rory", storageGB: 22.1, bandwidthGB: 15.4, isWooCommerce: false },
-      { domain: "goudabijkaarslicht.nl", status: "active", server: "Clara", storageGB: 12.4, bandwidthGB: 8.2, isWooCommerce: false },
-      { domain: "keencoffee.com", status: "active", server: "Ploi", storageGB: 8.5, bandwidthGB: 5.0, isWooCommerce: true },
-      { domain: "backtoblackcoffee.nl", status: "active", server: "Rory", storageGB: 3.2, bandwidthGB: 1.1, isWooCommerce: false },
-      { domain: "boevenkopje.nl", status: "active", server: "Clara", storageGB: 1.8, bandwidthGB: 0.5, isWooCommerce: false },
-      { domain: "old-project-test.dev", status: "inactive", server: "Rory", storageGB: 15.0, bandwidthGB: 0.0, isWooCommerce: false },
-      { domain: "problem-client-site.nl", status: "on_hold", server: "Cloudways", storageGB: 45.0, bandwidthGB: 50.0, isWooCommerce: true },
-      { domain: "unused-redirect.com", status: "inactive", server: "Clara", storageGB: 0.1, bandwidthGB: 0.0, isWooCommerce: false }
-    ];
-
-    // 3. LOGICA: AUTOMATISCHE ABCDE INDELING
-    function categorizeClient(site) {
-      if (site.status === 'inactive') {
-        return { tier: 'E', name: 'Elimineren / Opruimen', color: 'bg-red-100 text-red-800 border-red-200' };
-      }
-      if (site.status === 'on_hold') {
-        return { tier: 'D', name: 'Low Margin / Twijfel', color: 'bg-orange-100 text-orange-800 border-orange-200' };
-      }
-      if (site.storageGB > 20 || site.bandwidthGB > 30 || site.isWooCommerce) {
-        return { tier: 'A', name: 'Enterprise / Heavy Load', color: 'bg-emerald-100 text-emerald-800 border-emerald-200' };
-      }
-      if (site.storageGB >= 5 && site.storageGB <= 20) {
-        return { tier: 'B', name: 'Groeier / Waardevol', color: 'bg-blue-100 text-blue-800 border-blue-200' };
-      }
-      return { tier: 'C', name: 'Standaard / Low Maint.', color: 'bg-gray-100 text-gray-800 border-gray-200' };
-    }
-
-    // 4. RENDERING: KENNISBANK GRID
-    const kbContainer = document.getElementById('kennisbank-grid');
-    kbCategories.forEach(cat => {
-      const card = document.createElement('div');
-      card.className = "bg-white p-4 rounded-xl shadow-sm border border-gray-200 hover:border-blue-300 transition";
-      card.innerHTML = `
-        <div class="flex items-center gap-2 mb-3 border-b pb-2">
-          <span class="text-2xl">${cat.icon}</span>
-          <h3 class="font-bold text-gray-800 text-sm">${cat.title}</h3>
-        </div>
-        <ul class="space-y-1.5 text-xs text-gray-600">
-          ${cat.subs.map(sub => `<li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span> ${sub}</li>`).join('')}
-        </ul>
-      `;
-      kbContainer.appendChild(card);
-    });
-
-    // 5. RENDERING: HOSTING STATS & TABEL
-    let totalStorage = 0;
-    let totalBandwidth = 0;
-    let activeCount = 0;
-    let inactiveCount = 0;
-
-    const tableBody = document.getElementById('client-table-body');
-
-    // Sorteer sites op Tier (A -> E)
-    const processedSites = rawSites.map(site => {
-      return { ...site, abcde: categorizeClient(site) };
-    }).sort((a, b) => a.abcde.tier.localeCompare(b.abcde.tier));
-
-    processedSites.forEach(site => {
-      // Statistieken optellen
-      totalStorage += site.storageGB;
-      totalBandwidth += site.bandwidthGB;
-      if (site.status === 'active') activeCount++; else inactiveCount++;
-
-      // Tabelrij opbouwen
-      const row = document.createElement('tr');
-      row.className = "hover:bg-gray-50 transition border-b border-gray-100";
-      row.innerHTML = `
-        <td class="p-3.5 font-medium text-gray-900">${site.domain}</td>
-        <td class="p-3.5">
-          <span class="px-2.5 py-1 text-xs font-semibold rounded-full ${site.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}">
-            ${site.status}
-          </span>
-        </td>
-        <td class="p-3.5 text-gray-600">${site.server}</td>
-        <td class="p-3.5 font-medium">${site.storageGB} GB</td>
-        <td class="p-3.5 font-medium">${site.bandwidthGB} GB/m</td>
-        <td class="p-3.5">
-          <span class="px-2.5 py-1 text-xs font-bold rounded-md border ${site.abcde.color}">
-            Tier ${site.abcde.tier} — ${site.abcde.name}
-          </span>
-        </td>
-      `;
-      tableBody.appendChild(row);
-    });
-
-    // KPI waarden bijwerken
-    document.getElementById('stat-total').innerText = rawSites.length;
-    document.getElementById('stat-active').innerText = activeCount;
-    document.getElementById('stat-inactive').innerText = inactiveCount;
-    document.getElementById('stat-storage').innerText = totalStorage.toFixed(1) + " GB";
-    document.getElementById('stat-bandwidth').innerText = totalBandwidth.toFixed(1) + " GB/m";
-
-  </script>
 </body>
 </html>
